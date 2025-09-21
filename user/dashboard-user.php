@@ -12,12 +12,22 @@
          background: linear-gradient(to right, #00ffeeff, #0400ffff 100%);
       }
        .navbar{
+
          background-color: gray;
          overflow: hidden;
          height: 65px;
          display: flex;
          left: 0;
+         align-items: center;
       }
+      .navbar .right{
+         margin-left: 0;
+      }
+
+      .navbar .left{
+         margin-right: 0;
+      }
+
       .bottom{
          position: fixed;
          bottom: 0;
@@ -28,21 +38,29 @@
          background-color: gray;
       }
 
+      .insert{
+           padding: 8px 16px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+      left: 0;
+      position: absolute;
+      }
       
      .logout{
-             position: fixed;
-             right: 0;
-             color: white;
-             text-decoration: none;
-             gap: 2rem;
-             padding: 0px;
-             border-radius: 5px;
-             background-color: black;
-             max-height: 20px;
-             text-align: center;
              
-            margin: 0;
-            top: 0;
+  padding: 8px 16px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+      right: 0;
+      position: absolute;
             
      }
    </style>
@@ -51,6 +69,7 @@
        
 <nav class="navbar">
    <div class="Shoplogo"></div>
+   <a href='../product/insert-product.php' class='insert'>Insert product</a>
    <?php
 session_start();
 
@@ -59,8 +78,7 @@ if (empty($_SESSION['user'])) {
     exit;
 }
 
-echo "<strong><br><a class='logout' href='logout-user.php'>Logout</a></strong> ";
-
+echo "<a href='logout-user.php' class='logout'>Logout</a>";
 
 ?>
 </nav>

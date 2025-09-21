@@ -31,7 +31,7 @@
          background-color: gray;
          min-height: 200px;
          margin-top: 200px;
-         border: 1px solid #4a4444ff;
+         
          align-content: center;
          box-shadow: 0 2px 8px rgba(0.3,0.3,0.3,0.3);
          border-radius: 20px;
@@ -46,10 +46,20 @@
          margin-top: 5px;
          min-width: 100px;
          min-height: 35px;
-         border-radius: 10px;
+         border-radius: 6px;
          box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-         background-color: #00fff2ff;
-         border-color: #00fff2ff;
+         background-color: #008cffff;
+         border: none;
+         cursor: pointer;
+      }
+      .button:hover{
+         scale: 1.05;
+         transition: 0.3s;
+      }
+
+      .button:hover{
+              color: white;
+         background-color: #003e70ff;
       }
       .emailpass{
          display: flex;
@@ -121,7 +131,7 @@ try{
    </form>
 </div>
 <footer class="bottom">
-   <p> &copy; 2024 Shop</p>
+   <p> &copy; 2025 Shop</p>
 </footer>
 </body>
 </html>

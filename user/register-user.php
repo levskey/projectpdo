@@ -36,7 +36,7 @@
          justify-content: center;
          align-items: center;
       }
-      .button{
+  .button{
          display: flex;
          justify-self: center;
          gap: 1rem;
@@ -44,10 +44,20 @@
          margin-top: 5px;
          min-width: 100px;
          min-height: 35px;
-         border-radius: 10px;
+         border-radius: 6px;
          box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-         background-color: #00fff2ff;
-         border-color: #00fff2ff;
+         background-color: #008cffff;
+         border: none;
+         cursor: pointer;
+      }
+      .button:hover{
+         scale: 1.05;
+         transition: 0.3s;
+      }
+
+      .button:hover{
+              color: white;
+         background-color: #003e70ff;
       }
       .emailpass{
          display: flex;
@@ -100,7 +110,10 @@ try{
 
     }
 }catch(Exception $e){
-echo "er is een fout opgetreden: " . $e->getMessage();
+if ($e->getCode() == 23000 ){ 
+    echo "  Dit emailadres is al in gebruik.";}
+    else
+      echo "er is een fout opgetreden: " . $e->getMessage();
 }
 
 ?>

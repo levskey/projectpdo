@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+       <style>
+      body{
+         font-family: Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+         background: linear-gradient(to right, #00ffeeff, #0400ffff 100%);
+      }
+      .navbar{
+         background-color: gray;
+         overflow: hidden;
+         height: 65px;
+         display: flex;
+         align-items: center;
+         left: 0;
+      }
+      .logincontainer{
+         padding: 0;
+         margin-bottom: 100px;
+         min-width: 650px;
+         max-width: 650px;
+         max-height: 500px;
+         background-color: gray;
+         min-height: 400px;
+         border: 1px solid #4a4444ff;
+         box-shadow: 0 2px 8px rgba(0.3,0.3,0.3,0.3);
+         border-radius: 20px;
+         text-align: left;
+         
+      }
+
+      #Dsign{
+        left: 0;
+        top: 0;
+        border-radius: 8px;
+        border: none;
+        vertical-align: top;
+        margin: 8px;
+      }
+      .Beschrijving{
+         width: 300px;
+        height: 120px;
+      }
+
+  .button{
+
+         display: flex;
+         justify-self: center;
+         gap: 1rem;
+         display: inline-block;
+         margin: 5px;
+         min-width: 100px;
+         min-height: 35px;
+         border-radius: 6px;
+         box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+         background-color: #008cffff;
+         border: none;
+         cursor: pointer;
+      }
+      .button:hover{
+         scale: 1.05;
+         transition: 0.3s;
+      }
+
+      .wrapper {
+    display: flex;
+    vertical-align: middle;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.file{
+    margin: 5px;
+}
+
+      .button:hover{
+              color: white;
+         background-color: #003e70ff;
+      }
+      .emailpass{
+         display: flex;
+         justify-self: center;
+         gap: 1rem;
+         margin: 0;
+         margin-top: 0;
+      }
+      .bottom{
+         position: fixed;
+         bottom: 0;
+         justify-self: center;
+         width: 100%;
+         justify-content: center;
+         align-items: center;
+         text-align: center;
+         background-color: gray;
+      }
+
+         .Maintext{
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            gap: 2rem;
+            color: white;
+            text-shadow: #00fff2ff 1px 0 10px;
+
+            padding: 20px;
+         }
+   </style>
+</head>
+<body>
+    <nav class="navbar">
+  <strong><h3 class="Maintext">Webshop</h3></strong>
+  <a href="./view-product.php">bekijk producten</a> 
+</nav>
+<?php
+require_once '../includes/db.php';
+$db = new DB();
+
+if (isset($_POST['submit']) && isset($_FILES['files'])) {
+
+    $valid_extension = ["png","jpeg","jpg"];
+    $countfiles = count($_FILES['files']['name']);
+
+    for ($i = 0; $i < $countfiles; $i++) {
+        $tmpName  = $_FILES['files']['tmp_name'][$i];
+        $file_extension = strtolower(pathinfo($_FILES['files']['name'][$i], PATHINFO_EXTENSION));
+
+        if (in_array($file_extension, $valid_extension)) {
+            $target_file = 'uploads/' . uniqid() . '-' . basename($_FILES['files']['name'][$i]);
+
+            if (move_uploaded_file($tmpName, $target_file)) {
+                $db->run(
+                    "INSERT INTO products (Beschrijving, prijs, image) VALUES (?, ?, ?)",
+                    [$_POST['Beschrijving'], $_POST['prijs'], $target_file]
+                );
+            }
+        }
+    }
+
+    echo "File(s) uploaded successfully";
+} else {
+    echo "No files uploaded.";
+}
+
+?>
+
+
+
+?>
+
+<div class="wrapper">
+<div class="logincontainer">
+   <form method="POST" enctype="multipart/form-data">
+        <textarea name="Beschrijving" class="Beschrijving" name="Beschrijving" id="Dsign" placeholder="Beschrijving..." required></textarea>
+        <br>
+        <input type="number" step="0.01" name="prijs" id="Dsign" placeholder="12.99 ofzo" required>
+         <br>
+         <input type="file" class="file" name="files[]" id="files" required multiple />
+         <br>
+         <input type="submit" name="submit" class="button" value="Toevoegen">
+   </form>
+</div>
+</div>
+<footer class="bottom">
+   <p> &copy; 2025 Shop</p>
+</footer>
+</body>
+</html>
