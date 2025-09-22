@@ -14,6 +14,11 @@ class DB {
         $stmt->execute($args);
         return $stmt;
     }
+
+        // 👇 Getter method to expose PDO directly
+    public function getPDO() {
+        return $this->pdo;
+    }
 }
 
 

@@ -118,39 +118,55 @@
   <a href="./view-product.php">bekijk producten</a> 
 </nav>
 <?php
-require_once '../includes/db.php';
-$db = new DB();
-
-if (isset($_POST['submit']) && isset($_FILES['files'])) {
-
-    $valid_extension = ["png","jpeg","jpg"];
+include "../includes/db.php";
+  
+if(isset($_POST['submit'])) {
+   $db = new DB();  
+   $pdo = $db->getPDO();
+ 
+    // Count total files
     $countfiles = count($_FILES['files']['name']);
+  
+    // Prepared statement
+    $query = "INSERT INTO images (name,image,description,price) VALUES(?,?,?,?)";
+ 
+    $statement = $pdo->prepare($query);
+ 
+    // Loop all files
+    for($i = 0; $i < $countfiles; $i++) {
+ 
+        // File name
+        $filename = $_FILES['files']['name'][$i];
+     
+        // Location
+        $target_file = './uploads/'.$filename;
+     
+        // file extension
+        $file_extension = pathinfo(
+            $target_file, PATHINFO_EXTENSION);
+            
+        $file_extension = strtolower($file_extension);
+     
+        // Valid image extension
+        $valid_extension = array("png","jpeg","jpg");
+     
+        if(in_array($file_extension, $valid_extension)) {
+ 
+            // Upload file
+            if(move_uploaded_file(
+                $_FILES['files']['tmp_name'][$i],
+                $target_file)
+            ) {
 
-    for ($i = 0; $i < $countfiles; $i++) {
-        $tmpName  = $_FILES['files']['tmp_name'][$i];
-        $file_extension = strtolower(pathinfo($_FILES['files']['name'][$i], PATHINFO_EXTENSION));
-
-        if (in_array($file_extension, $valid_extension)) {
-            $target_file = 'uploads/' . uniqid() . '-' . basename($_FILES['files']['name'][$i]);
-
-            if (move_uploaded_file($tmpName, $target_file)) {
-                $db->run(
-                    "INSERT INTO products (Beschrijving, prijs, image) VALUES (?, ?, ?)",
-                    [$_POST['Beschrijving'], $_POST['prijs'], $target_file]
-                );
+                // Execute query
+                $statement->execute(
+                    array($filename,$target_file,$_POST['Beschrijving'],$_POST['prijs']));
             }
         }
     }
-
-    echo "File(s) uploaded successfully";
-} else {
-    echo "No files uploaded.";
+    
+    echo "File upload successfully";
 }
-
-?>
-
-
-
 ?>
 
 <div class="wrapper">
