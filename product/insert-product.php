@@ -19,6 +19,11 @@
          align-items: center;
          left: 0;
       }
+        .navbar a {
+            margin-left: 20px;
+            color: white;
+            text-decoration: none;
+        }
       .logincontainer{
          padding: 0;
          margin-bottom: 100px;
@@ -45,6 +50,12 @@
       .Beschrijving{
          width: 300px;
         height: 120px;
+      }
+      .Productname{
+         margin-left: 10px;
+         border: none;
+         margin-top: 10px;
+         border-radius: 8px;
       }
 
   .button{
@@ -90,7 +101,6 @@
          margin-top: 0;
       }
       .bottom{
-         position: fixed;
          bottom: 0;
          justify-self: center;
          width: 100%;
@@ -98,6 +108,14 @@
          align-items: center;
          text-align: center;
          background-color: gray;
+      }
+
+      .toevoegen{
+         margin-left: 15px;
+            padding: 0;
+            color: white;
+            text-shadow: #000000ff 1px 0 10px;
+
       }
 
          .Maintext{
@@ -116,6 +134,8 @@
     <nav class="navbar">
   <strong><h3 class="Maintext">Webshop</h3></strong>
   <a href="./view-product.php">bekijk producten</a> 
+  <br>
+    <a href="./../user/dashboard-user.php">Dashboard</a>
 </nav>
 <?php
 include "../includes/db.php";
@@ -128,7 +148,7 @@ if(isset($_POST['submit'])) {
     $countfiles = count($_FILES['files']['name']);
   
     // Prepared statement
-    $query = "INSERT INTO images (name,image,description,price) VALUES(?,?,?,?)";
+    $query = "INSERT INTO producten (productname,name,image,description,price) VALUES(?,?,?,?,?)";
  
     $statement = $pdo->prepare($query);
  
@@ -159,8 +179,14 @@ if(isset($_POST['submit'])) {
             ) {
 
                 // Execute query
-                $statement->execute(
-                    array($filename,$target_file,$_POST['Beschrijving'],$_POST['prijs']));
+                $statement->execute([
+    $_POST['Productname'],   // productname (normal name you typed)
+    $filename,               // name (original file name, e.g. shoe.jpeg)
+    $target_file,            // image (file path in uploads/)
+    $_POST['Beschrijving'],  // description (your text)
+    $_POST['prijs']          // price (the number)
+]);
+
             }
         }
     }
@@ -171,8 +197,11 @@ if(isset($_POST['submit'])) {
 
 <div class="wrapper">
 <div class="logincontainer">
+   <strong><h2 class="toevoegen">Product toevoegen</h2></strong>
    <form method="POST" enctype="multipart/form-data">
-        <textarea name="Beschrijving" class="Beschrijving" name="Beschrijving" id="Dsign" placeholder="Beschrijving..." required></textarea>
+        <input type="text" name="Productname" id="Productname" class="Productname" placeholder="Productnaam" required  >
+        <br>
+        <textarea class="Beschrijving" name="Beschrijving" id="Dsign" placeholder="Beschrijving..." required></textarea>
         <br>
         <input type="number" step="0.01" name="prijs" id="Dsign" placeholder="12.99 ofzo" required>
          <br>

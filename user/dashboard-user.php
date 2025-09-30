@@ -29,7 +29,6 @@
       }
 
       .bottom{
-         position: fixed;
          bottom: 0;
          width: 100%;
          justify-content: center;

@@ -69,7 +69,6 @@
          margin-top: 0;
       }
       .bottom{
-         position: fixed;
          bottom: 0;
          justify-self: center;
          width: 100%;
@@ -88,38 +87,37 @@
 <?php
 session_start();
 require "../includes/user-class.php";
-try{
- if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-      $user = new User();
 
-       // XSS prevention
-    $email = htmlspecialchars($_POST['email']); 
-    $wachtwoord = htmlspecialchars($_POST['wachtwoord']);
+try {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $user = new User();
 
-   $dbuser = $user->userLogin($email);
+        // XSS prevention
+        $email = htmlspecialchars($_POST['email']); 
+        $wachtwoord = htmlspecialchars($_POST['wachtwoord']);
 
-   if ($dbuser){
-      if (password_verify($wachtwoord, $dbuser["password"])) {
-         $_SESSION['user'] = [
-         "id" => $dbuser["id"],
-         "email" => $dbuser["email"]
-      ];
-      echo "inloggen gelukt!";
-    header("Location: dashboard-user.php");
-    exit;
-      }else{
-        echo "wachtwoord onjuist";
+        $dbuser = $user->userLogin($email);
 
-   }
-   }
+        if ($dbuser) {
+            if (password_verify($wachtwoord, $dbuser["password"])) {
+                $_SESSION['user'] = [
+                    "id" => $dbuser["id"],
+                    "email" => $dbuser["email"]
+                ];
+                header("Location: dashboard-user.php");
+                exit;
+            } else {
+                echo "Wachtwoord onjuist";
+            }
+        } else {
+            echo "Gebruiker niet gevonden"; // <---- add this
+        }
+    }
+} catch (Exception $e) {
+    echo "Error: " . htmlspecialchars($e->getMessage()); // <---- echo it
 }
- 
-}catch(Exception $e){
- $e->getMessage();
-}
-
-
 ?>
+
 <div class="logincontainer">
    <form method="POST">
    <input class="emailpass" type="email" name="email" placeholder="email" required>
