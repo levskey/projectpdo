@@ -12,9 +12,11 @@
             background: linear-gradient(to right, #00ffeeff, #0400ffff 100%);
         }
         .navbar {
+            position: fixed;
             background-color: gray;
             overflow: hidden;
             height: 65px;
+            width: 100%;
             display: flex;
             align-items: center;
             padding: 0 20px;
@@ -37,7 +39,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        .button {
+        .buttonedit {
     display: inline-block;
     margin: 5px 5px 0 0;
     padding: 8px 15px;
@@ -46,11 +48,31 @@
     background-color: #008cffff;
     color: white;
     cursor: pointer;
+    text-decoration: none;
     font-size: 14px;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 }
-.button:hover {
+
+        .buttondelete {
+    display: inline-block;
+    margin: 5px 5px 0 0;
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: none;
+    background-color: #ff0000ff;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+.buttonedit:hover {
     background-color: #003e70ff;
+    transition: 0.3s;
+}
+
+.buttondelete:hover{
+    background-color: #700000ff;
     transition: 0.3s;
 }
 
@@ -60,6 +82,7 @@
             padding: 20px;
             max-width: 800px;
             width: 100%;
+            margin-top: 150px;
             box-shadow: 0 2px 8px rgba(0.3,0.3,0.3,0.3);
         }
         .product {
@@ -105,7 +128,8 @@
             foreach($productlist as $product) {
                 ?>
               <div class="product">
-    <img src="<?= htmlspecialchars($product['image']) ?>" 
+ 
+    <img src="./uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['productname']) ?>"
          alt="<?= htmlspecialchars($product['productname']) ?>" 
          width="200" height="200">
     <h4><?= htmlspecialchars($product['productname']) ?></h4>
@@ -113,8 +137,9 @@
     <p><strong>€<?= htmlspecialchars($product['price']) ?></strong></p>
 
     <!-- Nieuwe knoppen -->
-    <button class="button">Aanpassen</button>
-    <button class="button">Verwijderen</button>
+    <a href="./edit-product.php?id=<?= $product['id'] ?>" class="buttonedit">Aanpassen</a>
+    <a href="./delete-product.php?id=<?= $product['id'] ?>" class="buttondelete">Verwijderen</a>
+
 </div>
 
                 <?php

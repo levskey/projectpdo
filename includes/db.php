@@ -19,6 +19,15 @@ class DB {
     public function getPDO() {
         return $this->pdo;
     }
+
+   public function updateProduct($id, $name, $description, $price, $image) {
+    $sql = "UPDATE producten 
+            SET productname = ?, description = ?, price = ?, image = ?
+            WHERE id = ?";
+    return $this->run($sql, [$name, $description, $price, $image, $id]);
+}
+
+    
 }
 
 

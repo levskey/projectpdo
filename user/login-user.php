@@ -31,7 +31,6 @@
          background-color: gray;
          min-height: 200px;
          margin-top: 200px;
-         
          align-content: center;
          box-shadow: 0 2px 8px rgba(0.3,0.3,0.3,0.3);
          border-radius: 20px;
@@ -58,7 +57,7 @@
       }
 
       .button:hover{
-              color: white;
+         color: white;
          background-color: #003e70ff;
       }
       .emailpass{
@@ -69,7 +68,8 @@
          margin-top: 0;
       }
       .bottom{
-         bottom: 0;
+         bottom: 0px;
+         position: absolute;
          justify-self: center;
          width: 100%;
          justify-content: center;
@@ -77,14 +77,31 @@
          text-align: center;
          background-color: gray;
       }
+
+      .Maintext{
+         font-size: 30px;
+         padding: 0;
+         margin: 0;
+         gap: 2rem;
+         color: white;
+         text-shadow: #00fff2ff 1px 0 10px;
+         padding: 20px;
+      }
    </style>
 </head>
 <body>
    
-<nav class="navbar">
-   <div class="Shoplogo"></div>
+    <nav class="navbar">
+  <strong><h3 class="Maintext">Webshop</h3></strong> 
 </nav>
-<?php
+
+<div class="logincontainer">
+   <form method="POST">
+   <input class="emailpass" type="email" name="email" placeholder="email" required>
+   <br>
+   <input class="emailpass" type="password" name="wachtwoord" placeholder="wachtwoord" required>
+   <br>
+   <?php
 session_start();
 require "../includes/user-class.php";
 
@@ -117,16 +134,11 @@ try {
     echo "Error: " . htmlspecialchars($e->getMessage()); // <---- echo it
 }
 ?>
-
-<div class="logincontainer">
-   <form method="POST">
-   <input class="emailpass" type="email" name="email" placeholder="email" required>
-   <br>
-   <input class="emailpass" type="password" name="wachtwoord" placeholder="wachtwoord" required>
-   <br>
+<br>
    <input class="button" type="submit" value="Login">
    <input class="button" type="button" value="Register" onclick="window.location.href='register-user.php'">
    </form>
+   
 </div>
 <footer class="bottom">
    <p> &copy; 2025 Shop</p>

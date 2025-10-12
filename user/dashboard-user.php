@@ -30,6 +30,7 @@
 
       .bottom{
          bottom: 0;
+         position: absolute;
          width: 100%;
          justify-content: center;
          align-items: center;
