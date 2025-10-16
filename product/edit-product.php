@@ -60,71 +60,171 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product aanpassen</title>
-<style>
-body { font-family: Arial; margin: 0; padding: 0; background: linear-gradient(to right, #00ffeeff, #0400ffff 100%); }
-.navbar { position: fixed; background-color: gray; height: 65px; width: 100%; display: flex; align-items: center; padding: 0 20px; }
-.navbar a { margin-left: 20px; color: white; text-decoration: none; }
-.Maintext { font-size: 30px; margin: 0; color: white; text-shadow: #00fff2ff 1px 0 10px; }
-.wrapper { display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; }
-.logincontainer { background-color: gray; border-radius: 20px; padding: 20px; max-width: 500px; width: 100%; margin-top: 150px; box-shadow: 0 2px 8px rgba(0.3,0.3,0.3,0.3); }
-label { display: block; margin-top: 10px; font-weight: bold; color: white; }
-input, textarea { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: none; }
-button { background-color: #008cffff; border: none; color: white; padding: 10px 15px; border-radius: 6px; cursor: pointer; margin-top: 10px; font-size: 14px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-button:hover { background-color: #003e70ff; transition: 0.3s; }
-.message { text-align: center; font-weight: bold; margin-bottom: 15px; color: white; }
-.product-preview { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: center; }
-.product-preview img { max-width: 200px; border-radius: 10px; margin-bottom: 10px; }
-.bottom { bottom: 0; width: 100%; text-align: center; background-color: gray; color: white; padding: 10px 0; position: fixed; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product aanpassen</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #00ffeeff, #0400ffff 100%);
+        }
+
+        .navbar {
+            position: fixed;
+            background-color: gray;
+            height: 65px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .navbar a {
+            margin-left: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .Maintext {
+            font-size: 30px;
+            margin: 0;
+            color: white;
+            text-shadow: #00fff2ff 1px 0 10px;
+        }
+
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .logincontainer {
+            background-color: gray;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            margin-top: 50px;
+            box-shadow: 0 2px 8px rgba(0.3, 0.3, 0.3, 0.3);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: white;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background-color: #008cffff;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #003e70ff;
+            transition: 0.3s;
+        }
+
+        .message {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .product-preview {
+            background: white;
+            border-radius: 10px;
+            padding-right: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .product-preview img {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .bottom {
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            background-color: gray;
+            color: white;
+            padding: 10px 0;
+            position: relative;
+        }
+    </style>
 </head>
+
 <body>
 
-<nav class="navbar">
-<h3 class="Maintext">Webshop</h3>
-<a href="./insert-product.php">producten toevoegen</a>
-<a href="./../user/dashboard-user.php">Dashboard</a>
-</nav>
+    <nav class="navbar">
+        <h3 class="Maintext">Webshop</h3>
+        <a href="./insert-product.php">producten toevoegen</a>
+        <a href="./../user/dashboard-user.php">Dashboard</a>
+    </nav>
 
-<div class="wrapper">
-<div class="logincontainer">
-<h2>Product aanpassen</h2>
+    <div class="wrapper">
+        <div class="logincontainer">
+            <h2>Product aanpassen</h2>
 
-<?php if ($message): ?>
-<p class="message"><?= htmlspecialchars($message) ?></p>
-<?php endif; ?>
+            <?php if ($message): ?>
+                <p class="message"><?= htmlspecialchars($message) ?></p>
+            <?php endif; ?>
 
-<div class="product-preview">
-<h4><?= htmlspecialchars($product['productname']) ?></h4>
-<img src="./uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['productname']) ?>">
-<p><?= htmlspecialchars($product['description']) ?></p>
-<p><strong>€<?= htmlspecialchars($product['price']) ?></strong></p>
-</div>
+            <div class="product-preview">
+                <h4><?= htmlspecialchars($product['productname']) ?></h4>
+                <img src="./uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['productname']) ?>">
+                <p><?= htmlspecialchars($product['description']) ?></p>
+                <p><strong>€<?= htmlspecialchars($product['price']) ?></strong></p>
+            </div>
 
-<form method="POST" enctype="multipart/form-data">
-<label>Productnaam:</label>
-<input type="text" name="productname" value="<?= htmlspecialchars($product['productname']) ?>" required>
+            <form method="POST" enctype="multipart/form-data">
+                <label>Productnaam:</label>
+                <input type="text" name="productname" value="<?= htmlspecialchars($product['productname']) ?>" required>
 
-<label>Beschrijving:</label>
-<textarea name="description" required><?= htmlspecialchars($product['description']) ?></textarea>
+                <label>Beschrijving:</label>
+                <textarea name="description" required><?= htmlspecialchars($product['description']) ?></textarea>
 
-<label>Prijs (€):</label>
-<input type="number" step="0.01" name="price" value="<?= htmlspecialchars($product['price']) ?>" required>
+                <label>Prijs (€):</label>
+                <input type="number" step="0.01" name="price" value="<?= htmlspecialchars($product['price']) ?>" required>
 
-<label>Afbeelding uploaden:</label>
-<input type="file" name="image">
+                <label>Afbeelding uploaden:</label>
+                <input type="file" name="image">
 
-<button type="submit">Opslaan</button>
-</form>
-</div>
-</div>
+                <button type="submit">Opslaan</button>
+            </form>
+        </div>
+    </div>
 
-<footer class="bottom">
-<p>&copy; 2025 Shop</p>
-</footer>
+    <footer class="bottom">
+        <p>&copy; 2025 Shop</p>
+    </footer>
 
 </body>
+
 </html>

@@ -1,19 +1,19 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Login test</title>
    <style>
-      body{
+      body {
          font-family: Arial, sans-serif;
          margin: 0;
          padding: 0;
          background: linear-gradient(to right, #00ffeeff, #0400ffff 100%);
       }
-       .navbar{
+
+      .navbar {
          background-color: gray;
          overflow: hidden;
          height: 65px;
@@ -21,7 +21,8 @@
          align-items: center;
          left: 0;
       }
-      .logincontainer{
+
+      .logincontainer {
          display: flex;
          padding: 0;
          margin: 0;
@@ -32,12 +33,13 @@
          min-height: 200px;
          margin-top: 200px;
          align-content: center;
-         box-shadow: 0 2px 8px rgba(0.3,0.3,0.3,0.3);
+         box-shadow: 0 2px 8px rgba(0.3, 0.3, 0.3, 0.3);
          border-radius: 20px;
          justify-content: center;
          align-items: center;
       }
-      .button{
+
+      .button {
          display: flex;
          justify-self: center;
          gap: 1rem;
@@ -46,28 +48,31 @@
          min-width: 100px;
          min-height: 35px;
          border-radius: 6px;
-         box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
          background-color: #008cffff;
          border: none;
          cursor: pointer;
       }
-      .button:hover{
+
+      .button:hover {
          scale: 1.05;
          transition: 0.3s;
       }
 
-      .button:hover{
+      .button:hover {
          color: white;
          background-color: #003e70ff;
       }
-      .emailpass{
+
+      .emailpass {
          display: flex;
          justify-self: center;
          gap: 1rem;
          margin: 0;
          margin-top: 0;
       }
-      .bottom{
+
+      .bottom {
          bottom: 0px;
          position: absolute;
          justify-self: center;
@@ -78,7 +83,7 @@
          background-color: gray;
       }
 
-      .Maintext{
+      .Maintext {
          font-size: 30px;
          padding: 0;
          margin: 0;
@@ -89,59 +94,63 @@
       }
    </style>
 </head>
+
 <body>
-   
-    <nav class="navbar">
-  <strong><h3 class="Maintext">Webshop</h3></strong> 
-</nav>
 
-<div class="logincontainer">
-   <form method="POST">
-   <input class="emailpass" type="email" name="email" placeholder="email" required>
-   <br>
-   <input class="emailpass" type="password" name="wachtwoord" placeholder="wachtwoord" required>
-   <br>
-   <?php
-session_start();
-require "../includes/user-class.php";
+   <nav class="navbar">
+      <strong>
+         <h3 class="Maintext">Webshop</h3>
+      </strong>
+   </nav>
 
-try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $user = new User();
+   <div class="logincontainer">
+      <form method="POST">
+         <input class="emailpass" type="email" name="email" placeholder="email" required>
+         <br>
+         <input class="emailpass" type="password" name="wachtwoord" placeholder="wachtwoord" required>
+         <br>
+         <?php
+         session_start();
+         require "../includes/user-class.php";
 
-        // XSS prevention
-        $email = htmlspecialchars($_POST['email']); 
-        $wachtwoord = htmlspecialchars($_POST['wachtwoord']);
+         try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+               $user = new User();
 
-        $dbuser = $user->userLogin($email);
+               // XSS prevention
+               $email = htmlspecialchars($_POST['email']);
+               $wachtwoord = htmlspecialchars($_POST['wachtwoord']);
 
-        if ($dbuser) {
-            if (password_verify($wachtwoord, $dbuser["password"])) {
-                $_SESSION['user'] = [
-                    "id" => $dbuser["id"],
-                    "email" => $dbuser["email"]
-                ];
-                header("Location: dashboard-user.php");
-                exit;
-            } else {
-                echo "Wachtwoord onjuist";
+               $dbuser = $user->userLogin($email);
+
+               if ($dbuser) {
+                  if (password_verify($wachtwoord, $dbuser["password"])) {
+                     $_SESSION['user'] = [
+                        "id" => $dbuser["id"],
+                        "email" => $dbuser["email"]
+                     ];
+                     header("Location: dashboard-user.php");
+                     exit;
+                  } else {
+                     echo "Wachtwoord onjuist";
+                  }
+               } else {
+                  echo "Gebruiker niet gevonden"; // <---- add this
+               }
             }
-        } else {
-            echo "Gebruiker niet gevonden"; // <---- add this
-        }
-    }
-} catch (Exception $e) {
-    echo "Error: " . htmlspecialchars($e->getMessage()); // <---- echo it
-}
-?>
-<br>
-   <input class="button" type="submit" value="Login">
-   <input class="button" type="button" value="Register" onclick="window.location.href='register-user.php'">
-   </form>
-   
-</div>
-<footer class="bottom">
-   <p> &copy; 2025 Shop</p>
-</footer>
+         } catch (Exception $e) {
+            echo "Error: " . htmlspecialchars($e->getMessage()); // <---- echo it
+         }
+         ?>
+         <br>
+         <input class="button" type="submit" value="Login">
+         <input class="button" type="button" value="Register" onclick="window.location.href='register-user.php'">
+      </form>
+
+   </div>
+   <footer class="bottom">
+      <p> &copy; 2025 Shop</p>
+   </footer>
 </body>
+
 </html>
