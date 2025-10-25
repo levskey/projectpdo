@@ -1,58 +1,45 @@
 <?php
+session_start();
 include "../includes/db.php";
 $db = new DB();
 $pdo = $db->getPDO();
 
+// Controleer of er een ID is meegegeven
 if (!isset($_GET['id'])) {
-    die("Geen product ID opgegeven.");
+    $_SESSION['error'] = "Geen product ID opgegeven.";
+    header("Location: view-product.php");
+    exit();
 }
 
 $id = $_GET['id'];
+$message = "";
 
+// Haal productgegevens op
 $stmt = $pdo->prepare("SELECT * FROM producten WHERE id = ?");
 $stmt->execute([$id]);
 $product = $stmt->fetch();
 
 if (!$product) {
-    die("Product niet gevonden.");
+    $_SESSION['error'] = "Product niet gevonden.";
+    header("Location: view-product.php");
+    exit();
 }
 
-$message = "";
-
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $name = $_POST['productname'];
-        $description = $_POST['description'];
-    $price = $_POST['price'];
-
-    // upload map zonder spatie, map moet bestaan
-    $uploadDir = './uploads/';
-
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $originalName = $_FILES['image']['name'];
-        $ext = pathinfo($originalName, PATHINFO_EXTENSION);
-        $safeName = preg_replace("/[^A-Za-z0-9_\-]/", "_", pathinfo($originalName, PATHINFO_FILENAME));
-        $filename = $safeName . '_' . time() . '.' . $ext;
-        $targetFile = $uploadDir . $filename;
-
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-            // het pad voor in de database
-            $imagePath = $filename;
-        } else {
-            $imagePath = $product['image'];
-            $message = "Fout bij uploaden, oude afbeelding behouden.";
+// Verwerk het verwijderen na bevestiging
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['bevestig_verwijderen'])) {
+    $stmt = $pdo->prepare("DELETE FROM producten WHERE id = ?");
+    
+    if ($stmt->execute([$id])) {
+        // Verwijder eventueel de bijbehorende afbeelding
+        if (!empty($product['image']) && file_exists("uploads/" . $product['image'])) {
+            @unlink("uploads/" . $product['image']);
         }
+        
+        $_SESSION['success'] = "Product succesvol verwijderd.";
+        header("Location: view-product.php");
+        exit();
     } else {
-        $imagePath = $product['image'];
-    }
-
-    if ($db->updateProduct($id, $name, $description, $price, $imagePath)) {
-        $message = "Product succesvol bijgewerkt!";
-        $product['productname'] = $name;
-        $product['description'] = $description;
-        $product['price'] = $price;
-        $product['image'] = $imagePath;
-    } else {
-        $message = "Er ging iets mis bij het bijwerken.";
+        $message = "Er is een fout opgetreden bij het verwijderen van het product.";
     }
 }
 ?>
@@ -64,7 +51,7 @@ $message = "";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product aanpassen</title>
+    <title>Product verwijderen</title>
     <style>
         body {
             font-family: Arial;
@@ -72,8 +59,6 @@ $message = "";
             padding: 0;
             background: linear-gradient(to right, #00ffeeff, #0400ffff 100%);
         }
-
-        
 
         .navbar {
             position: fixed;
@@ -133,7 +118,7 @@ $message = "";
         }
 
         button {
-      display: inline-block;
+            display: inline-block;
             margin: 5px 5px 0 0;
             padding: 8px 15px;
             border-radius: 6px;
@@ -148,6 +133,25 @@ $message = "";
         }
 
         button:hover {
+            background-color: #cc0000;
+            transition: 0.3s;
+        }
+        
+        .button {
+            display: inline-block;
+            margin: 5px 5px 0 0;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: none;
+            background-color: #008cffff;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button:hover {
             background-color: #003e70ff;
             transition: 0.3s;
         }
@@ -195,18 +199,29 @@ $message = "";
 
     <div class="wrapper">
         <div class="logincontainer">
-            <h2>Product aanpassen</h2>
+            <h2>Product verwijderen</h2>
+
+            <?php if (isset($_SESSION['error'])): ?>
+                <p class="message" style="color: #ff6b6b;"><?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></p>
+            <?php endif; ?>
 
             <?php if ($message): ?>
                 <p class="message"><?= htmlspecialchars($message) ?></p>
             <?php endif; ?>
 
             <div class="product-preview">
+                <h3>Weet u zeker dat u dit product wilt verwijderen?</h3>
                 <h4><?= htmlspecialchars($product['productname']) ?></h4>
-                <img src="./uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['productname']) ?>">
+                <?php if (!empty($product['image'])): ?>
+                    <img src="./uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['productname']) ?>" style="max-width: 200px;">
+                <?php endif; ?>
                 <p><?= htmlspecialchars($product['description']) ?></p>
                 <p><strong>€<?= htmlspecialchars($product['price']) ?></strong></p>
-                <button name="verwijderknop" id="Knop">Verwijderen</button>
+                
+                <form method="POST" onsubmit="return confirm('Weet u zeker dat u dit product wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.');">
+                    <button type="submit" name="bevestig_verwijderen" style="background-color: #ff4444; margin-right: 10px;">Ja, verwijderen</button>
+                    <a href="view-product.php" class="button" style="display: inline-block; background-color: #666; padding: 8px 15px; border-radius: 6px; color: white; text-decoration: none;">Annuleren</a>
+                </form>
             </div>
         </div>
     </div>
